@@ -1,6 +1,7 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, SchemaTypes } from 'mongoose';
 import { Roles, Status } from '../constants/enums';
 import { UserModel } from '../interfaces/user.interface';
+import { UserProfileSchema } from './user-profile.model';
 
 const UserSchema = new Schema<UserModel>({
     email: {
@@ -36,6 +37,10 @@ const UserSchema = new Schema<UserModel>({
         type: Boolean,
         default: false,
     },
+    profile: {
+        type: UserProfileSchema,
+        required: true,
+    }
 });
 
 UserSchema.methods.toJSON = function () {

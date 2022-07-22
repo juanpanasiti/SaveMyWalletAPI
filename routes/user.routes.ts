@@ -30,7 +30,7 @@ router.put(
     '/:id',
     [
         validateJWT,
-        filterValidFields(['username', 'password', 'email', 'img','status','role']),
+        filterValidFields(['username', 'password', 'email', 'img','status','role', 'profile']),
         // hasRole([Roles.ADMIN, Roles.SUPER_ADMIN]),
         check('role', 'Role is invalid')
             .if((role: string) => !!role)

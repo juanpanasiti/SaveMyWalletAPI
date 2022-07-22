@@ -1,5 +1,6 @@
 import { FilterQuery, ObjectId, ProjectionType, QueryOptions } from 'mongoose';
 import { Roles, Status } from '../constants/enums';
+import { UserProfileModel, EditableUserProfile } from './user-profile.interfaces';
 
 export interface UserModel {
     _id?: ObjectId;
@@ -10,6 +11,7 @@ export interface UserModel {
     role: Roles;
     status: Status;
     google: boolean;
+    profile: UserProfileModel;
 }
 
 export interface EditableUserData {
@@ -19,6 +21,7 @@ export interface EditableUserData {
     img?: string | null;
     role?: Roles;
     status?: Status;
+    profile?: EditableUserProfile;
 }
 
 export interface UsersFilterOptions {
