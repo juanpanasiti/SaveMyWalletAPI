@@ -7,13 +7,19 @@ import { PaginationQuery } from '../interfaces/path.interfaces';
 import { JsonResponse } from '../interfaces/response.interfaces';
 import { EditableUserData, UsersFilterOptions } from '../interfaces/user.interface';
 import * as userServices from '../services/user.services';
+import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
 
-export const getAllPaginated = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response<JsonResponse>) => {
+export const getAllPaginated = async (
+    req: Request<{}, {}, {}, PaginationQuery>,
+    res: Response<JsonResponse>
+) => {
     const { skip = 0, limit = 2 } = req.query;
 
     try {
         const filterOptions: UsersFilterOptions = {
-            filter: { $or: [{ status: Status.ACTIVE }, { status: Status.PENDING }] },
+            filter: {
+                $or: [{ status: Status.ACTIVE }, { status: Status.PENDING }],
+            },
         };
         const countProm = userServices.countUsersByFilter(filterOptions);
         filterOptions.options = {
@@ -90,10 +96,11 @@ export const updateUserById = async (
     req: Request<{ id: string }, {}, EditableUserData>,
     res: Response<JsonResponse>
 ) => {
-    const { password, email, username, img, status, role } = req.body;
+    const { password, email, username, img, status, role, profile } = req.body;
     const uid = req.params.id;
     const authRole: string = req.headers.authRole as string;
     const editPayload: EditableUserData = {};
+    const editProfile: EditableUserProfile = {};
     switch (authRole) {
         case Roles.SUPER_ADMIN:
             if (email) {
@@ -116,12 +123,24 @@ export const updateUserById = async (
             if (password) {
                 editPayload.password = encrypt(password);
             }
+
+            // Edit profile if present
+            if (profile?.asociatedCreditCards) {
+                editProfile.asociatedCreditCards = profile.asociatedCreditCards;
+            }
+            if (profile?.nextPaymentDate) {
+                editProfile.nextPaymentDate = profile.nextPaymentDate;
+            }
+            if (profile?.paymentAmount) {
+                editProfile.paymentAmount = profile.paymentAmount;
+            }
             break;
         default:
             throw new Error("This wasn't supposed to happen");
     }
     try {
-        const userEdited = await userServices.updateUserById(uid, editPayload);
+        const userEdited = await userServices.updateUserById(uid, editPayload, editProfile);
+
         if (!userEdited) {
             res.status(404).json({
                 response_data: null,
