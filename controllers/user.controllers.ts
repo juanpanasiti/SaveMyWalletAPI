@@ -8,6 +8,7 @@ import { JsonResponse } from '../interfaces/response.interfaces';
 import { EditableUserData, UsersFilterOptions } from '../interfaces/user.interface';
 import * as userServices from '../services/user.services';
 import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
+import { filterPayloadField } from '../helpers/user-profile-helpers';
 
 export const getAllPaginated = async (
     req: Request<{}, {}, {}, PaginationQuery>,
@@ -59,7 +60,7 @@ export const getUserById = async (req: Request, res: Response<JsonResponse>) => 
             filter: { _id: uid, status: Status.ACTIVE },
         };
 
-        filterOptions.projection = 'username email img role';
+        filterOptions.projection = 'username email img role profile';
         const user = await userServices.getOneUserByFilter(filterOptions);
 
         if (!user) {
@@ -125,14 +126,8 @@ export const updateUserById = async (
             }
 
             // Edit profile if present
-            if (profile?.asociatedCreditCards) {
-                editProfile.asociatedCreditCards = profile.asociatedCreditCards;
-            }
-            if (profile?.nextPaymentDate) {
-                editProfile.nextPaymentDate = profile.nextPaymentDate;
-            }
-            if (profile?.paymentAmount) {
-                editProfile.paymentAmount = profile.paymentAmount;
+            if (profile) {
+                filterPayloadField(profile, editProfile)
             }
             break;
         default:

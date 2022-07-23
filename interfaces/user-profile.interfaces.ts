@@ -6,10 +6,14 @@ export interface UserProfileModel {
     nextPaymentDate: Date;
     paymentAmount: number;
     asociatedCreditCards: CreditCardModel[];
+    globalCycleAmountAlert: number;
+    activeGlobalCycleAmountAlert: boolean;
 }
 
 export interface EditableUserProfile {
     nextPaymentDate?: Date;
     paymentAmount?: number;
     asociatedCreditCards?: CreditCardModel[];
+    globalCycleAmountAlert?: number;
+    activeGlobalCycleAmountAlert?: boolean;
 }

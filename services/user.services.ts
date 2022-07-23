@@ -4,6 +4,7 @@ import { RegisterBody } from '../interfaces/auth.interfaces';
 import { encrypt } from '../helpers/password';
 import { EditableUserData, UserModel, UsersFilterOptions } from '../interfaces/user.interface';
 import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
+import * as profileService from './user-profile.services'
 
 export const countUsersByFilter = async (filterOptions: UsersFilterOptions) => {
     const { filter = {} } = filterOptions;
@@ -61,14 +62,13 @@ export const updateUserById = async (
     uid: string,
     userPayload: EditableUserData,
     profilePayload: EditableUserProfile = {}
-) => {
+): Promise<UserModel | null> => {
     try {
-        let user = await User.findByIdAndUpdate(uid, userPayload, { new: true });
+        const user = await User.findByIdAndUpdate(uid, userPayload, { new: true });
         if (user && profilePayload) {
-            user.profile.nextPaymentDate =
-                profilePayload.nextPaymentDate || user.profile.nextPaymentDate;
-            user.profile.paymentAmount = profilePayload.paymentAmount || user.profile.paymentAmount;
+            await profileService.updateProfile(user, profilePayload)
         }
+
         return user;
     } catch (err) {
         Logger.error('Error on .../services/user.services.ts -> updateUserById()', `${err}`);
