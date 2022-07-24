@@ -4,9 +4,10 @@ import jwt from 'jsonwebtoken';
 
 import { Roles, Status } from '../constants/enums';
 import Logger from '../helpers/logger';
-import { UserModel, UsersFilterOptions } from '../interfaces/user.interface';
+import { UserModel } from '../interfaces/user.interface';
 import * as userServices from '../services/user.services';
 import { JsonResponse } from '../interfaces/response.interfaces';
+import { FilterOptions } from '../interfaces/generic.interfaces';
 
 export const hasRole = (allowed_roles: Roles[]) => {
     return async (req: Request, res: Response<JsonResponse>, next: NextFunction) => {
@@ -24,7 +25,7 @@ export const hasRole = (allowed_roles: Roles[]) => {
         };
 
         try {
-            const filterOptions: UsersFilterOptions = {
+            const filterOptions: FilterOptions<UserModel> = {
                 filter: { _id: uid, status: Status.ACTIVE },
             };
 
@@ -78,7 +79,7 @@ export const checkPermissionAndExistence = async (
         });
     }
     try {
-        const filterOptions: UsersFilterOptions = {
+        const filterOptions: FilterOptions<UserModel> = {
             filter: { _id: loggedUID, status: Status.ACTIVE },
         };
 

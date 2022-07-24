@@ -1,5 +1,6 @@
 import { Schema, SchemaTypes, model } from 'mongoose';
 import { UserProfileModel } from '../interfaces/user-profile.interfaces';
+import Logger from '../helpers/logger';
 
 export const UserProfileSchema = new Schema<UserProfileModel>({
     nextPaymentDate: {
@@ -13,12 +14,6 @@ export const UserProfileSchema = new Schema<UserProfileModel>({
         set: (value: number) => Math.round((value + Number.EPSILON) * 100) / 100,
         min: 0,
     },
-    asociatedCreditCards: [
-        {
-            type: SchemaTypes.ObjectId,
-            ref: 'Installment',
-        },
-    ],
     globalCycleAmountAlert: {
         type: SchemaTypes.Number,
         min: 0,
@@ -31,5 +26,11 @@ export const UserProfileSchema = new Schema<UserProfileModel>({
         default: false
     }
 });
+
+UserProfileSchema.virtual('creditCards')
+    .get(() => {
+        Logger.info('Getter called')
+        return ['sarasa']
+    })
 
 export default model('UserProfile', UserProfileSchema)

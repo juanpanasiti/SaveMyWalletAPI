@@ -5,10 +5,11 @@ import Logger from '../helpers/logger';
 import { encrypt } from '../helpers/password';
 import { PaginationQuery } from '../interfaces/path.interfaces';
 import { JsonResponse } from '../interfaces/response.interfaces';
-import { EditableUserData, UsersFilterOptions } from '../interfaces/user.interface';
+import { EditableUserData, UserModel } from '../interfaces/user.interface';
 import * as userServices from '../services/user.services';
 import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
 import { filterPayloadField } from '../helpers/user-profile-helpers';
+import { FilterOptions } from '../interfaces/generic.interfaces';
 
 export const getAllPaginated = async (
     req: Request<{}, {}, {}, PaginationQuery>,
@@ -17,7 +18,7 @@ export const getAllPaginated = async (
     const { skip = 0, limit = 2 } = req.query;
 
     try {
-        const filterOptions: UsersFilterOptions = {
+        const filterOptions: FilterOptions<UserModel> = {
             filter: {
                 $or: [{ status: Status.ACTIVE }, { status: Status.PENDING }],
             },
@@ -56,11 +57,23 @@ export const getUserById = async (req: Request, res: Response<JsonResponse>) => 
     const uid = req.params.id;
 
     try {
-        const filterOptions: UsersFilterOptions = {
+        const filterOptions: FilterOptions<UserModel> = {
             filter: { _id: uid, status: Status.ACTIVE },
         };
 
-        filterOptions.projection = 'username email img role profile';
+        // filterOptions.projection = 'username email img role profile';
+        filterOptions.options = {
+            projection:
+                'username email img role profile.paymentAmount profile.nextPaymentDate '+
+                'profile.activeGlobalCycleAmountAlert profile.globalCycleAmountAlert',
+            populate: [
+                {
+                    path: 'creditCards',
+                    justOne: false,
+                    select: 'name',
+                },
+            ],
+        };
         const user = await userServices.getOneUserByFilter(filterOptions);
 
         if (!user) {
@@ -127,7 +140,7 @@ export const updateUserById = async (
 
             // Edit profile if present
             if (profile) {
-                filterPayloadField(profile, editProfile)
+                filterPayloadField(profile, editProfile);
             }
             break;
         default:

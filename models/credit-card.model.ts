@@ -14,14 +14,14 @@ const CreditCardSchema = new Schema<CreditCardModel>({
     },
     balance: {
         type: SchemaTypes.Number,
-        required: true,
+        default: 0,
         get: (value: number) => Math.round((value + Number.EPSILON) * 100) / 100,
         set: (value: number) => Math.round((value + Number.EPSILON) * 100) / 100,
         min: 0,
     },
     cycleAmountAlert: {
         type: SchemaTypes.Number,
-        required: true,
+        default: 0,
         get: (value: number) => Math.round((value + Number.EPSILON) * 100) / 100,
         set: (value: number) => Math.round((value + Number.EPSILON) * 100) / 100,
         min: 0,

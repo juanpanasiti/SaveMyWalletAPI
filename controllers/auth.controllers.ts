@@ -5,8 +5,9 @@ import { generateJWT } from '../helpers/jwt';
 import Logger from '../helpers/logger';
 import { check } from '../helpers/password';
 import { JsonResponse } from '../interfaces/response.interfaces';
-import { UserModel, UsersFilterOptions } from '../interfaces/user.interface';
+import { UserModel } from '../interfaces/user.interface';
 import * as userServices from '../services/user.services';
+import { FilterOptions } from '../interfaces/generic.interfaces';
 
 export const register = async (req: Request, res: Response<JsonResponse>) => {
     try {
@@ -35,7 +36,7 @@ export const login = async (req: Request, res: Response<JsonResponse>) => {
         let user: UserModel | null;
 
         // Checks if user exist on DB (by email or username)
-        const filterOptions: UsersFilterOptions = { filter: undefined };
+        const filterOptions: FilterOptions<UserModel> = { filter: undefined };
         if (email) {
             filterOptions.filter = { email };
         } else {

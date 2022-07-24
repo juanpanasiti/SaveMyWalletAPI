@@ -12,6 +12,7 @@ export interface UserModel {
     status: Status;
     google: boolean;
     profile: UserProfileModel;
+    creditCards: any;
 }
 
 export interface EditableUserData {
@@ -24,8 +25,3 @@ export interface EditableUserData {
     profile?: EditableUserProfile;
 }
 
-export interface UsersFilterOptions {
-    filter: FilterQuery<UserModel> | undefined;
-    projection?: ProjectionType<UserModel> | null | undefined;
-    options?: QueryOptions<UserModel> | null | undefined;
-}

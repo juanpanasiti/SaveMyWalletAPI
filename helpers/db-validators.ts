@@ -1,8 +1,9 @@
 import * as userServices from '../services/user.services';
-import { UsersFilterOptions } from '../interfaces/user.interface';
+import { FilterOptions } from '../interfaces/generic.interfaces';
+import { UserModel } from '../interfaces/user.interface';
 
 export const userFieldExists = async (fieldName: string, fieldValue: string) => {
-    const filterOptions: UsersFilterOptions = {
+    const filterOptions: FilterOptions<UserModel> = {
         filter: { [fieldName]: fieldValue },
     };
     const count = await userServices.countUsersByFilter(filterOptions);

@@ -16,6 +16,7 @@ class Server {
     private apiPaths = {
         auth: `${apiV1}/auth`,
         users: `${apiV1}/users`,
+        creditCards: `${apiV1}/credit-cards`,
     };
 
     constructor() {
@@ -50,6 +51,7 @@ class Server {
         this.app.use('/api/tests', routes.testsRoutes);
         this.app.use(this.apiPaths.auth, routes.authRoutes);
         this.app.use(this.apiPaths.users, routes.userRoutes);
+        this.app.use(this.apiPaths.creditCards, routes.creditCardsRoutes);
     }
 
     listen() {

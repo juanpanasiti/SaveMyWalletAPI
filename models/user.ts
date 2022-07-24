@@ -2,6 +2,8 @@ import { Schema, model, SchemaTypes } from 'mongoose';
 import { Roles, Status } from '../constants/enums';
 import { UserModel } from '../interfaces/user.interface';
 import { UserProfileSchema } from './user-profile.model';
+import Logger from '../helpers/logger';
+import mongoose from 'mongoose';
 
 const UserSchema = new Schema<UserModel>({
     email: {
@@ -40,7 +42,7 @@ const UserSchema = new Schema<UserModel>({
     profile: {
         type: UserProfileSchema,
         required: true,
-    }
+    },
 });
 
 UserSchema.methods.toJSON = function () {
@@ -49,4 +51,11 @@ UserSchema.methods.toJSON = function () {
     return user;
 };
 
+UserSchema.virtual('creditCards', {
+    ref: 'CreditCard',
+    localField: '_id',
+    foreignField: 'owner',
+});
+
+UserSchema.set('toJSON', { virtuals: ['creditCards'] });
 export default model('User', UserSchema);

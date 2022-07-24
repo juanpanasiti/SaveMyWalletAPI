@@ -4,9 +4,6 @@ export const filterPayloadField = (
     payload: EditableUserProfile,
     allowedProfile: EditableUserProfile
 ): void => {
-    if (payload.asociatedCreditCards) {
-        allowedProfile.asociatedCreditCards = payload.asociatedCreditCards;
-    }
     if (payload.nextPaymentDate) {
         allowedProfile.nextPaymentDate = payload.nextPaymentDate;
     }

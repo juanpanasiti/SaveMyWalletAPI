@@ -1,7 +1,7 @@
 import { Location, Result, ValidationError } from "express-validator";
 
 export interface JsonResponse {
-    response_data: object | string | null;
+    response_data: any;
     errors: ErrorResponse[] | Result<ValidationError>;
 }
 
