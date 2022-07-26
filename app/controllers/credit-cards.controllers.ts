@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
-import { Status } from '../constants/enums';
 
 import Logger from '../helpers/logger';
-import { CreditCardModel, NewCreditCardBody } from '../interfaces/credit-card.interfaces';
+import {
+    CCReqQuery,
+    CreditCardModel,
+    NewCreditCardBody,
+} from '../interfaces/credit-card.interfaces';
 import { PaginationQuery } from '../interfaces/path.interfaces';
 import { JsonResponse } from '../interfaces/response.interfaces';
-import * as userServices from '../services/user.services';
 import * as creditCardServices from '../services/credit-card.services';
 import { FilterOptions } from '../interfaces/generic.interfaces';
+import { PopulateOptions } from 'mongoose';
 
 export const getAllPaginated = async (
     req: Request<{}, {}, {}, PaginationQuery>,
@@ -16,7 +19,13 @@ export const getAllPaginated = async (
     const { skip = 0, limit = 2 } = req.query;
     const uid = req.headers.authId;
     const filterOptions: FilterOptions<CreditCardModel> = {
-        filter: { owner: uid },
+        filter: {
+            $and: [{ isDeleted: false }, { $or: [{ owner: uid }, { 'partners.user': uid }] }],
+        },
+        options: {
+            skip,
+            limit,
+        },
     };
     try {
         const ccAsociated = await creditCardServices.getManyCreditCardsByFilter(filterOptions);
@@ -59,13 +68,12 @@ export const createCreditCard = async (
     try {
         const creditCard = await creditCardServices.createCreditCard(payload, uid);
         if (!creditCard) {
-
             throw new Error('Something went wrong creating the new Credit Card');
         }
         res.status(201).json({
             response_data: creditCard,
-            errors: []
-        })
+            errors: [],
+        });
     } catch (err) {
         res.status(500).json({
             response_data: null,
@@ -76,6 +84,70 @@ export const createCreditCard = async (
             ],
         });
     }
+};
+
+export const getOneCreditCardById = async (
+    req: Request<{ id: string }, {}, null, CCReqQuery>,
+    res: Response<JsonResponse>
+) => {
+    const { partners, purchases, cycles } = req.query;
+    const { id } = req.params;
+    const uid = req.headers.authId;
+    const populateOptions: PopulateOptions[] = [
+        {
+            path: 'owner',
+            select: 'username img',
+        },
+    ];
+
+    if (partners) {
+        populateOptions.push({
+            path: 'partners.user',
+            select: 'username img',
+        });
+    }
+    if (purchases) {
+        populateOptions.push({
+            path: 'purchases',
+        });
+    }
+    if (cycles) {
+        populateOptions.push({
+            path: 'paymentCycles',
+        });
+    }
+
+    const filterOptions: FilterOptions<CreditCardModel> = {
+        filter: {
+            $and: [
+                { _id: id, isDeleted: false },
+                { $or: [{ owner: uid }, { 'partners.user': uid }] },
+            ],
+        },
+        options: {
+            populate: [...populateOptions],
+        },
+    };
+
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+
+        if (!creditCard) {
+            return res.status(404).json({
+                response_data: null,
+                errors: [
+                    {
+                        msg: 'Credit Card not found',
+                    },
+                ],
+            });
+        }
+
+        return res.status(200).json({
+            response_data: creditCard,
+            errors: [],
+        });
+    } catch (err) {}
 };
 
 // ! DELETE - Temporal response

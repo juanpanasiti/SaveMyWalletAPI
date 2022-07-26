@@ -8,7 +8,7 @@ const CreditCardSchema = new Schema<CreditCardModel>({
     name: {
         
     },
-    PaymentCycles: {
+    paymentCycles: {
         type: [PaymentCycleSchema],
         default: [],
     },

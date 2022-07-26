@@ -1,4 +1,4 @@
-import { FilterQuery, ObjectId, ProjectionType, QueryOptions } from 'mongoose';
+import { ObjectId } from 'mongoose';
 import { PartnerModel } from './partner.interfaces';
 import { PaymentCycleModel } from './payment-cycle.interfaces';
 import { PurchaseModel } from './purchase.interfaces';
@@ -7,7 +7,7 @@ import { UserModel } from './user.interface';
 export interface CreditCardModel {
     _id?: ObjectId;
     name: string;
-    PaymentCycles: PaymentCycleModel[];
+    paymentCycles: PaymentCycleModel[];
     balance: number;
     cycleAmountAlert: number;
     purchases: PurchaseModel[];
@@ -23,4 +23,10 @@ export interface NewCreditCardBody {
     cycleAmountAlert?: number;
     nextClosingDate: Date;
     nextExpirationDate: Date;
+}
+
+export interface CCReqQuery{
+    partners: boolean;
+    purchases: boolean;
+    cycles: boolean;
 }
