@@ -1,4 +1,5 @@
 import User from '../models/user';
+import UserProfile from '../models/user-profile.model';
 import Logger from '../helpers/logger';
 import { RegisterBody } from '../interfaces/auth.interfaces';
 import { encrypt } from '../helpers/password';
@@ -20,6 +21,7 @@ export const countUsersByFilter = async (filterOptions: FilterOptions<UserModel>
 export const createUser = async (fields: RegisterBody) => {
     try {
         const newUser = new User(fields);
+        newUser.profile = new UserProfile()
 
         // Encrypt password
         newUser.password = encrypt(fields.password);
