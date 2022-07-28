@@ -6,3 +6,9 @@ export interface PartnerModel {
     user: UserModel;
     canEdit: boolean;
 }
+
+export interface NewPartnerBody {
+    userUsername?: string
+    userEmail?: string
+    canEdit?: boolean
+}

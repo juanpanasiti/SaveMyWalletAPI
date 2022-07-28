@@ -69,7 +69,7 @@ export const userMustBeOwnerCC = async (
                 response_data: null,
                 errors: [
                     {
-                        msg: 'Just the owner of the credit card can edit it',
+                        msg: 'Just the owner can use do this action',
                     },
                 ],
             });

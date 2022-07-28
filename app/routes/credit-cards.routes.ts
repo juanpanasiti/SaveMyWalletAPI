@@ -3,11 +3,12 @@ import { body, query, param } from 'express-validator';
 
 import * as creditCardsController from '../controllers/credit-cards.controllers';
 import { validateJWT } from '../middlewares/jwt-middlewares';
-import { fieldValidate, filterValidFields } from '../middlewares/field-middlewares';
+import { atLeastOneExists, fieldValidate, filterValidFields } from '../middlewares/field-middlewares';
 import { creditCardExists, userMustBeOwnerCC } from '../middlewares/db-middlewares';
 
 const router = Router();
 
+// Routes for Credit Cards C.R.U
 router.post(
     '/',
     [
@@ -70,4 +71,31 @@ router.put(
     creditCardsController.editOneCreditCardById
 );
 
+// CRUD routes for Partners related to a Credit Card
+router.post(
+    '/:id/partners',
+    [
+        validateJWT,
+        atLeastOneExists(['userUsername', 'userEmail']),
+        filterValidFields(['userUsername', 'userEmail', 'canEdit']),
+        body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        userMustBeOwnerCC,
+        fieldValidate,
+        creditCardExists,
+    ],
+    creditCardsController.addOrEditPartnerToCreditCard
+);
+router.put(
+    '/:id/partners',
+    [
+        validateJWT,
+        atLeastOneExists(['userUsername', 'userEmail']),
+        filterValidFields(['userUsername', 'userEmail', 'canEdit']),
+        body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        userMustBeOwnerCC,
+        fieldValidate,
+        creditCardExists,
+    ],
+    creditCardsController.addOrEditPartnerToCreditCard
+);
 export default router;

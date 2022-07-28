@@ -3,6 +3,7 @@ import { PopulateOptions } from 'mongoose';
 
 import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
+import * as userServices from '../services/user.services';
 import { CCFilterOptions } from '../types/credit-card.types';
 import {
     PutCCRequest,
@@ -10,7 +11,10 @@ import {
     JsonResponse,
     PostCCRequest,
     PaginatedRequest,
+    PostPartnerRequest,
 } from '../types/request-response.types';
+import { UserFilterOptions } from '../types/user.types';
+import Partner from '../models/partner.model';
 
 export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
@@ -175,6 +179,72 @@ export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse
 
         return res.status(200).json({
             response_data: updatedCreditCard,
+            errors: [],
+        });
+    } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
+};
+
+// Credit Card controller to work with its related partners
+export const addOrEditPartnerToCreditCard = async (req: PostPartnerRequest, res: JsonResponse) => {
+    const uid = req.headers.authId;
+    const { id } = req.params;
+    const { userEmail, userUsername, canEdit } = req.body;
+
+    const userFilterOptions: UserFilterOptions = {
+        filter: { isDeleted: false, $or: [{ username: userUsername }, { email: userEmail }] },
+        projection: '_id',
+    };
+
+    const ccFilterOptions: CCFilterOptions = {
+        filter: { _id: id, isDeleted: false },
+        projection: 'partners',
+    };
+    try {
+        const userPartner = await userServices.getOneUserByFilter(userFilterOptions);
+        if (!userPartner) {
+            return;
+        }
+        // * Must fails if logged user and partner are the same
+        if (userPartner._id?.toString() === uid) {
+            return res.status(400).json({
+                response_data: null,
+                errors: [
+                    {
+                        msg: "Owner and partner can't be the same user",
+                    },
+                ],
+            });
+        }
+
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(ccFilterOptions);
+        if (!creditCard) {
+            return;
+        }
+        let createNew = true;
+        creditCard.partners.map((partner) => {
+            if (!(partner.user._id?.toString() === userPartner._id?.toString())) {
+                return;
+            }
+            createNew = false;
+            partner.canEdit = !!canEdit;
+            Logger.info(creditCard);
+        });
+        if (createNew) {
+            creditCard.partners.push(new Partner({ user: userPartner, canEdit: !!canEdit }));
+        }
+        creditCard.save();
+
+        res.status(200).json({
+            response_data: creditCard,
             errors: [],
         });
     } catch (err) {
