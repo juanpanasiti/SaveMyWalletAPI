@@ -1,10 +1,9 @@
 import { Request } from 'express';
+import { PopulateOptions } from 'mongoose';
 
 import Logger from '../helpers/logger';
-import { CreditCardModel } from '../interfaces/credit-card.interfaces';
 import * as creditCardServices from '../services/credit-card.services';
-import { FilterOptions } from '../interfaces/generic.interfaces';
-import { PopulateOptions } from 'mongoose';
+import { CCFilterOptions } from '../types/credit-cards.types';
 import {
     PutCCRequest,
     GetOneCCRequest,
@@ -16,7 +15,7 @@ import {
 export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
     const uid = req.headers.authId;
-    const filterOptions: FilterOptions<CreditCardModel> = {
+    const filterOptions: CCFilterOptions = {
         filter: {
             $and: [{ isDeleted: false }, { $or: [{ owner: uid }, { 'partners.user': uid }] }],
         },
@@ -109,7 +108,7 @@ export const getOneCreditCardById = async (req: GetOneCCRequest, res: JsonRespon
         });
     }
 
-    const filterOptions: FilterOptions<CreditCardModel> = {
+    const filterOptions: CCFilterOptions = {
         filter: {
             $and: [
                 { _id: id, isDeleted: false },
@@ -156,7 +155,7 @@ export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse
     const { name, cycleAmountAlert, nextClosingDate, nextExpirationDate } = req.body;
     const uid = req.headers.authId;
 
-    const filterOptions: FilterOptions<CreditCardModel> = {
+    const filterOptions: CCFilterOptions = {
         filter: { _id: id, isDeleted: false },
         projection: 'name cycleAmountAlert nextClosingDate nextExpirationDate',
     };

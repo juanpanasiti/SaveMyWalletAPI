@@ -1,9 +1,8 @@
 import { NextFunction, Response, Request } from 'express';
-import { CreditCardModel } from '../interfaces/credit-card.interfaces';
-import { FilterOptions } from '../interfaces/generic.interfaces';
 import { JsonResponse } from '../interfaces/response.interfaces';
 import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
+import { CCFilterOptions } from '../types/credit-cards.types';
 
 export const creditCardExists = async (
     req: Request,
@@ -12,7 +11,7 @@ export const creditCardExists = async (
 ) => {
     const uid = req.headers.authId;
     const ccId = req.params.id;
-    const filterOptions: FilterOptions<CreditCardModel> = {
+    const filterOptions: CCFilterOptions = {
         filter: {
             $and: [
                 { _id: req.params.id, isDeleted: false },
@@ -59,7 +58,7 @@ export const userMustBeOwnerCC = async (
 ) => {
     const uid = req.headers.authId;
     const ccId = req.params.id;
-    const filterOptions: FilterOptions<CreditCardModel> = {
+    const filterOptions: CCFilterOptions = {
         filter: { _id: ccId, isDeleted: false },
         projection:'owner'
     };
