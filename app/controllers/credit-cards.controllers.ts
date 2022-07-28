@@ -3,7 +3,7 @@ import { PopulateOptions } from 'mongoose';
 
 import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
-import { CCFilterOptions } from '../types/credit-cards.types';
+import { CCFilterOptions } from '../types/credit-card.types';
 import {
     PutCCRequest,
     GetOneCCRequest,

@@ -6,7 +6,7 @@ import {
     CCListPromise,
     NewCCPromise,
     OneCCPromise,
-} from '../types/credit-cards.types';
+} from '../types/credit-card.types';
 
 export const countCreditCardsByFilter = async (filterOptions: CCFilterOptions): Promise<number> => {
     const { filter = {} } = filterOptions;

@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import { JsonResponse } from '../interfaces/response.interfaces';
 import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
-import { CCFilterOptions } from '../types/credit-cards.types';
+import { CCFilterOptions } from '../types/credit-card.types';
 
 export const creditCardExists = async (
     req: Request,
