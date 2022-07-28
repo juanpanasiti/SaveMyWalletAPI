@@ -4,7 +4,7 @@ import { body, query, param } from 'express-validator';
 import * as creditCardsController from '../controllers/credit-cards.controllers';
 import { validateJWT } from '../middlewares/jwt-middlewares';
 import { fieldValidate, filterValidFields } from '../middlewares/field-middlewares';
-import { creditCardExists } from '../middlewares/db-middlewares';
+import { creditCardExists, userMustBeOwnerCC } from '../middlewares/db-middlewares';
 
 const router = Router();
 
@@ -55,6 +55,19 @@ router.get(
         query('cycles', 'Indicates if cycles must be in the response').toBoolean(),
     ],
     creditCardsController.getOneCreditCardById
+);
+
+router.put(
+    '/:id',
+    [
+        validateJWT,
+        param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
+        userMustBeOwnerCC,
+        filterValidFields(['name', 'cycleAmountAlert', 'nextClosingDate', 'nextExpirationDate']),
+        fieldValidate,
+        creditCardExists,
+    ],
+    creditCardsController.editOneCreditCardById
 );
 
 export default router;

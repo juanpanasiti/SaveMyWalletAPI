@@ -5,9 +5,7 @@ import { PaymentCycleSchema } from './payment-cycle.model';
 import { PurchaseSchema } from './purchase.model';
 
 const CreditCardSchema = new Schema<CreditCardModel>({
-    name: {
-        
-    },
+    name: {},
     paymentCycles: {
         type: [PaymentCycleSchema],
         default: [],
@@ -42,6 +40,16 @@ const CreditCardSchema = new Schema<CreditCardModel>({
     partners: {
         type: [PartnerSchema],
         default: [],
+    },
+    nextClosingDate: {
+        type: SchemaTypes.Date,
+        required: false,
+        default: null,
+    },
+    nextExpirationDate: {
+        type: SchemaTypes.Date,
+        required: false,
+        default: null,
     },
 });
 

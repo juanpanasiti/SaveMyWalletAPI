@@ -2,6 +2,7 @@ import Logger from '../helpers/logger';
 import { NewCreditCardBody, CreditCardModel } from '../interfaces/credit-card.interfaces';
 import CreditCard from '../models/credit-card.model';
 import { FilterOptions } from '../interfaces/generic.interfaces';
+import { OneCreditCardDB } from '../types/credit-cards.types';
 
 export const countCreditCardsByFilter = async (filterOptions: FilterOptions<CreditCardModel>) => {
     const { filter = {} } = filterOptions;
@@ -18,10 +19,11 @@ export const countCreditCardsByFilter = async (filterOptions: FilterOptions<Cred
 
 export const getOneCreditCardsByFilter = async (
     filterOptions: FilterOptions<CreditCardModel>
-): Promise<CreditCardModel | null> => {
+): Promise<OneCreditCardDB> => {
     const { filter = {}, options = {}, projection = null } = filterOptions;
     try {
-        return await CreditCard.findOne(filter, projection, options);
+        const cc = await await CreditCard.findOne(filter, projection, options);
+        return cc
     } catch (err) {
         Logger.error(
             'Error on .../services/user.services.ts -> getOneCreditCardsByFilter()',

@@ -25,6 +25,13 @@ export interface NewCreditCardBody {
     nextExpirationDate: Date;
 }
 
+export interface EditCreditCardBody {
+    name?: string;
+    cycleAmountAlert?: number;
+    nextClosingDate?: Date;
+    nextExpirationDate?: Date;
+}
+
 export interface CCReqQuery{
     partners: boolean;
     purchases: boolean;

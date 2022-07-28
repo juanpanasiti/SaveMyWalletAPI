@@ -11,7 +11,7 @@ export const creditCardExists = async (
     next: NextFunction
 ) => {
     const uid = req.headers.authId;
-    const cc_id = req.params.id;
+    const ccId = req.params.id;
     const filterOptions: FilterOptions<CreditCardModel> = {
         filter: {
             $and: [
@@ -33,7 +33,44 @@ export const creditCardExists = async (
                         msg: 'Credit Card not found!',
                         location: 'params',
                         param: 'id',
-                        value: cc_id,
+                        value: ccId,
+                    },
+                ],
+            });
+        }
+    } catch (err) {
+        Logger.error(err)
+        return res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `${err}`,
+                },
+            ],
+        });
+    }
+    next();
+};
+
+export const userMustBeOwnerCC = async (
+    req: Request,
+    res: Response<JsonResponse>,
+    next: NextFunction
+) => {
+    const uid = req.headers.authId;
+    const ccId = req.params.id;
+    const filterOptions: FilterOptions<CreditCardModel> = {
+        filter: { _id: ccId, isDeleted: false },
+        projection:'owner'
+    };
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+        if (creditCard?.owner.toString() !== uid) {
+            return res.status(401).json({
+                response_data: null,
+                errors: [
+                    {
+                        msg: 'Just the owner of the credit card can edit it',
                     },
                 ],
             });

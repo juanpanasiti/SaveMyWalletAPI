@@ -1,21 +1,19 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 import Logger from '../helpers/logger';
-import {
-    CCReqQuery,
-    CreditCardModel,
-    NewCreditCardBody,
-} from '../interfaces/credit-card.interfaces';
-import { PaginationQuery } from '../interfaces/path.interfaces';
-import { JsonResponse } from '../interfaces/response.interfaces';
+import { CreditCardModel } from '../interfaces/credit-card.interfaces';
 import * as creditCardServices from '../services/credit-card.services';
 import { FilterOptions } from '../interfaces/generic.interfaces';
 import { PopulateOptions } from 'mongoose';
+import {
+    PutCCRequest,
+    GetOneCCRequest,
+    JsonResponse,
+    PostCCRequest,
+    PaginatedRequest,
+} from '../types/request-response.types';
 
-export const getAllPaginated = async (
-    req: Request<{}, {}, {}, PaginationQuery>,
-    res: Response<JsonResponse>
-) => {
+export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
     const uid = req.headers.authId;
     const filterOptions: FilterOptions<CreditCardModel> = {
@@ -56,10 +54,7 @@ export const getAllPaginated = async (
     });
 };
 
-export const createCreditCard = async (
-    req: Request<{}, {}, NewCreditCardBody>,
-    res: Response<JsonResponse>
-) => {
+export const createCreditCard = async (req: PostCCRequest, res: JsonResponse) => {
     // At this point, we can be sure that body has just the correct
     // fields because of the middlewares
     const { body: payload } = req;
@@ -86,10 +81,7 @@ export const createCreditCard = async (
     }
 };
 
-export const getOneCreditCardById = async (
-    req: Request<{ id: string }, {}, null, CCReqQuery>,
-    res: Response<JsonResponse>
-) => {
+export const getOneCreditCardById = async (req: GetOneCCRequest, res: JsonResponse) => {
     const { partners, purchases, cycles } = req.query;
     const { id } = req.params;
     const uid = req.headers.authId;
@@ -147,11 +139,59 @@ export const getOneCreditCardById = async (
             response_data: creditCard,
             errors: [],
         });
-    } catch (err) {}
+    } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
+};
+
+export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse) => {
+    const { id } = req.params;
+    const { name, cycleAmountAlert, nextClosingDate, nextExpirationDate } = req.body;
+    const uid = req.headers.authId;
+
+    const filterOptions: FilterOptions<CreditCardModel> = {
+        filter: { _id: id, isDeleted: false },
+        projection: 'name cycleAmountAlert nextClosingDate nextExpirationDate',
+    };
+    try {
+        const updatedCreditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+
+        if (!updatedCreditCard) {
+            throw new Error('Some filter failed, this is not supposed to happen');
+        }
+        updatedCreditCard.name = name || updatedCreditCard.name;
+        updatedCreditCard.cycleAmountAlert = cycleAmountAlert || updatedCreditCard.cycleAmountAlert;
+        updatedCreditCard.nextClosingDate = nextClosingDate || updatedCreditCard.nextClosingDate;
+        updatedCreditCard.nextExpirationDate =
+            nextExpirationDate || updatedCreditCard.nextExpirationDate;
+
+        await updatedCreditCard.save();
+
+        return res.status(200).json({
+            response_data: updatedCreditCard,
+            errors: [],
+        });
+    } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
 };
 
 // ! DELETE - Temporal response
-export const notImplemented = async (req: Request, res: Response<JsonResponse>) => {
+export const notImplemented = async (req: Request, res: JsonResponse) => {
     res.status(501).json({
         response_data: null,
         errors: [
