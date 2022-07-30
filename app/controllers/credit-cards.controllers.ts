@@ -234,7 +234,7 @@ export const deleteOneCreditCard = async (req: DeleteCCRequest, res: JsonRespons
 
 
 // Credit Card controller to work with its related partners
-export const addOrEditPartnerToCreditCard = async (req: PostPartnerRequest, res: JsonResponse) => {
+export const addOrEditCCPartner = async (req: PostPartnerRequest, res: JsonResponse) => {
     const uid = req.headers.authId;
     const { id } = req.params;
     const { userEmail, userUsername, canEdit } = req.body;
@@ -299,7 +299,7 @@ export const addOrEditPartnerToCreditCard = async (req: PostPartnerRequest, res:
     }
 };
 
-export const deletePartnerById = async (req: DeletePartnerRequest, res: JsonResponse) => {
+export const deletePartner = async (req: DeletePartnerRequest, res: JsonResponse) => {
     const { id, partnerId } = req.params;
 
     const filterOptions: CCFilterOptions = {
