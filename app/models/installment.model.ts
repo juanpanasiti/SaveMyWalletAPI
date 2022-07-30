@@ -1,7 +1,6 @@
 import { Schema, model, SchemaTypes } from 'mongoose';
 import { InstallmentModel } from '../interfaces/installment.interfaces';
 
-
 export const InstallmentSchema = new Schema<InstallmentModel>({
     feeNumber: {
         type: SchemaTypes.Number,
@@ -22,17 +21,12 @@ export const InstallmentSchema = new Schema<InstallmentModel>({
         type: SchemaTypes.Boolean,
         default: false,
     },
-    paymentCycle:{
+    paymentCycle: {
         type: SchemaTypes.String,
         required: true,
         trim: true,
-        match: [/[0-9]{4}-(0[1-9]|1[0-2])/,''],  // yyyy-mm
+        match: [/[0-9]{4}-(0[1-9]|1[0-2])/, ''], // yyyy-mm
     },
-    isDeleted: {
-        type: SchemaTypes.Boolean,
-        default: false,
-    },
-
 });
 
-export default model('Installment', InstallmentSchema)
+export default model('Installment', InstallmentSchema);
