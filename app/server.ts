@@ -7,6 +7,7 @@ import routes from './routes'; // this imports index.ts file
 import Logger from './helpers/logger';
 import { isDevEnv } from './helpers/env';
 import dbConnection from './database/config.db';
+import { responseInterceptor } from './middlewares/res.middlewares';
 
 const apiV1 = '/api/v1';
 
@@ -45,6 +46,7 @@ class Server {
         // call middlewares here
         this.app.use(cors());
         this.app.use(morgan('tiny'));
+        this.app.use(responseInterceptor)
     }
 
     setRoutes() {

@@ -12,4 +12,5 @@ export interface RegisterBody {
 }
 export interface JWTPayload {
     uid: ObjectId;
+    exp: number
 }
