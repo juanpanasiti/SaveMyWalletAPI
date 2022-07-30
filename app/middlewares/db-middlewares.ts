@@ -4,19 +4,12 @@ import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
 import { CCFilterOptions } from '../types/credit-card.types';
 
-export const creditCardExists = async (
-    req: Request,
-    res: Response<JsonResponse>,
-    next: NextFunction
-) => {
+export const creditCardExists = async (req: Request, res: Response<JsonResponse>, next: NextFunction) => {
     const uid = req.headers.authId;
     const ccId = req.params.id;
     const filterOptions: CCFilterOptions = {
         filter: {
-            $and: [
-                { _id: req.params.id, isDeleted: false },
-                { $or: [{ owner: uid }, { 'partners.user': uid }] },
-            ],
+            $and: [{ _id: req.params.id, isDeleted: false }, { $or: [{ owner: uid }, { 'partners.user': uid }] }],
         },
         options: {
             limit: 1,
@@ -38,7 +31,7 @@ export const creditCardExists = async (
             });
         }
     } catch (err) {
-        Logger.error(err)
+        Logger.error(err);
         return res.status(500).json({
             response_data: null,
             errors: [
@@ -51,16 +44,12 @@ export const creditCardExists = async (
     next();
 };
 
-export const userMustBeOwnerCC = async (
-    req: Request,
-    res: Response<JsonResponse>,
-    next: NextFunction
-) => {
+export const userMustBeOwnerCC = async (req: Request, res: Response<JsonResponse>, next: NextFunction) => {
     const uid = req.headers.authId;
     const ccId = req.params.id;
     const filterOptions: CCFilterOptions = {
         filter: { _id: ccId, isDeleted: false },
-        projection:'owner'
+        projection: 'owner',
     };
     try {
         const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
@@ -75,7 +64,7 @@ export const userMustBeOwnerCC = async (
             });
         }
     } catch (err) {
-        Logger.error(err)
+        Logger.error(err);
         return res.status(500).json({
             response_data: null,
             errors: [

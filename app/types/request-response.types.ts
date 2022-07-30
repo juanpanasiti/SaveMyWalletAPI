@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import {
-    CCReqQuery,
-    EditCreditCardBody,
-    NewCreditCardBody,
-} from '../interfaces/credit-card.interfaces';
+import { CCReqQuery, EditCreditCardBody, NewCreditCardBody } from '../interfaces/credit-card.interfaces';
 import { NewPartnerBody } from '../interfaces/partner.interfaces';
 import { PaginationQuery } from '../interfaces/path.interfaces';
 import { JsonResponse as IJsonResponse } from '../interfaces/response.interfaces';

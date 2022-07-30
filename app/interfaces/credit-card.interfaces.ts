@@ -32,7 +32,7 @@ export interface EditCreditCardBody {
     nextExpirationDate?: Date;
 }
 
-export interface CCReqQuery{
+export interface CCReqQuery {
     partners: boolean;
     purchases: boolean;
     cycles: boolean;

@@ -1,9 +1,9 @@
-import { ObjectId } from "mongoose";
+import { ObjectId } from 'mongoose';
 
-export interface LoginBody{
-    email?: string,
-    username?: string,
-    password: string
+export interface LoginBody {
+    email?: string;
+    username?: string;
+    password: string;
 }
 export interface RegisterBody {
     username: string;
@@ -11,5 +11,5 @@ export interface RegisterBody {
     password: string;
 }
 export interface JWTPayload {
-    uid: ObjectId
+    uid: ObjectId;
 }

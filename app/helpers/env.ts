@@ -1,3 +1,3 @@
-export const isDevEnv = ():boolean => {
-    return process.env.ENVIRONMENT === 'dev'
-}
+export const isDevEnv = (): boolean => {
+    return process.env.ENVIRONMENT === 'dev';
+};

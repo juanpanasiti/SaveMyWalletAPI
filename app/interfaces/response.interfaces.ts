@@ -1,4 +1,4 @@
-import { Location, Result, ValidationError } from "express-validator";
+import { Location, Result, ValidationError } from 'express-validator';
 
 export interface JsonResponse {
     response_data: any;

@@ -24,4 +24,3 @@ export interface EditableUserData {
     status?: Status;
     profile?: EditableUserProfile;
 }
-

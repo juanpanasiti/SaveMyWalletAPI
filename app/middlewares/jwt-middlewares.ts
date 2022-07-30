@@ -72,8 +72,7 @@ export const validateJWT = (req: Request, res: Response<JsonResponse>, next: Nex
                 errors: [
                     {
                         msg: 'Something went wrong, please contact de admin',
-                    }
-                    
+                    },
                 ],
             });
         }

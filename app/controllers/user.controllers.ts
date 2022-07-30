@@ -11,10 +11,7 @@ import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
 import { filterPayloadField } from '../helpers/user-profile-helpers';
 import { FilterOptions } from '../interfaces/generic.interfaces';
 
-export const getAllPaginated = async (
-    req: Request<{}, {}, {}, PaginationQuery>,
-    res: Response<JsonResponse>
-) => {
+export const getAllPaginated = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response<JsonResponse>) => {
     const { skip = 0, limit = 2 } = req.query;
 
     try {
@@ -64,7 +61,7 @@ export const getUserById = async (req: Request, res: Response<JsonResponse>) => 
         // filterOptions.projection = 'username email img role profile';
         filterOptions.options = {
             projection:
-                'username email img role profile.paymentAmount profile.nextPaymentDate '+
+                'username email img role profile.paymentAmount profile.nextPaymentDate ' +
                 'profile.activeGlobalCycleAmountAlert profile.globalCycleAmountAlert',
             populate: [
                 {

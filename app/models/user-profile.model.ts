@@ -23,14 +23,13 @@ export const UserProfileSchema = new Schema<UserProfileModel>({
     },
     activeGlobalCycleAmountAlert: {
         type: SchemaTypes.Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
-UserProfileSchema.virtual('creditCards')
-    .get(() => {
-        Logger.info('Getter called')
-        return ['sarasa']
-    })
+UserProfileSchema.virtual('creditCards').get(() => {
+    Logger.info('Getter called');
+    return ['sarasa'];
+});
 
-export default model('UserProfile', UserProfileSchema)
+export default model('UserProfile', UserProfileSchema);

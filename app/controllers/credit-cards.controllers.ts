@@ -116,10 +116,7 @@ export const getOneCreditCardById = async (req: GetOneCCRequest, res: JsonRespon
 
     const filterOptions: CCFilterOptions = {
         filter: {
-            $and: [
-                { _id: id, isDeleted: false },
-                { $or: [{ owner: uid }, { 'partners.user': uid }] },
-            ],
+            $and: [{ _id: id, isDeleted: false }, { $or: [{ owner: uid }, { 'partners.user': uid }] }],
         },
         options: {
             populate: [...populateOptions],
@@ -174,8 +171,7 @@ export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse
         updatedCreditCard.name = name || updatedCreditCard.name;
         updatedCreditCard.cycleAmountAlert = cycleAmountAlert || updatedCreditCard.cycleAmountAlert;
         updatedCreditCard.nextClosingDate = nextClosingDate || updatedCreditCard.nextClosingDate;
-        updatedCreditCard.nextExpirationDate =
-            nextExpirationDate || updatedCreditCard.nextExpirationDate;
+        updatedCreditCard.nextExpirationDate = nextExpirationDate || updatedCreditCard.nextExpirationDate;
 
         await updatedCreditCard.save();
 
@@ -195,7 +191,6 @@ export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse
     }
 };
 
-
 export const deleteOneCreditCard = async (req: DeleteCCRequest, res: JsonResponse) => {
     const { id } = req.params;
     const uid = req.headers.authId;
@@ -206,12 +201,12 @@ export const deleteOneCreditCard = async (req: DeleteCCRequest, res: JsonRespons
     };
     try {
         const deletedCreditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
-        Logger.warning(deletedCreditCard)
+        Logger.warning(deletedCreditCard);
 
         if (!deletedCreditCard) {
             throw new Error('Some filter failed, this is not supposed to happen');
         }
-        deletedCreditCard.isDeleted = true
+        deletedCreditCard.isDeleted = true;
 
         await deletedCreditCard.save();
 
@@ -230,8 +225,6 @@ export const deleteOneCreditCard = async (req: DeleteCCRequest, res: JsonRespons
         });
     }
 };
-
-
 
 // Credit Card controller to work with its related partners
 export const addOrEditCCPartner = async (req: PostPartnerRequest, res: JsonResponse) => {

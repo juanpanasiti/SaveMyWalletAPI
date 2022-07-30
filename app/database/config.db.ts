@@ -6,7 +6,7 @@ const dbConnection = async () => {
         await mongoose.connect(process.env.MONGO_CNN || '');
         Logger.success('DB Connected OK!');
     } catch (err) {
-        Logger.error(`Error starting DB Connection:\n${err}`)
+        Logger.error(`Error starting DB Connection:\n${err}`);
         throw new Error(`Error starting DB Connection:\n${err}`);
     }
 };

@@ -8,7 +8,7 @@ export interface PartnerModel {
 }
 
 export interface NewPartnerBody {
-    userUsername?: string
-    userEmail?: string
-    canEdit?: boolean
+    userUsername?: string;
+    userEmail?: string;
+    canEdit?: boolean;
 }

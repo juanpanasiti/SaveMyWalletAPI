@@ -1,10 +1,8 @@
-import { Document, Types, ObjectId } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
 import Logger from '../helpers/logger';
 import { UserModel } from '../interfaces/user.interface';
-import * as userServices from './user.services';
-import { CreditCardModel } from '../interfaces/credit-card.interfaces';
 
 export const updateProfile = async (
     user: Document<unknown, any, UserModel> &
@@ -18,14 +16,10 @@ export const updateProfile = async (
         user.profile.paymentAmount = payload.paymentAmount || user.profile.paymentAmount;
         user.profile.activeGlobalCycleAmountAlert =
             payload.activeGlobalCycleAmountAlert || user.profile.activeGlobalCycleAmountAlert;
-        user.profile.globalCycleAmountAlert =
-            payload.globalCycleAmountAlert || user.profile.globalCycleAmountAlert;
+        user.profile.globalCycleAmountAlert = payload.globalCycleAmountAlert || user.profile.globalCycleAmountAlert;
         return user;
     } catch (err) {
-        Logger.error(
-            'Error on .../services/user-profile.services.ts -> updateProfileById()',
-            `${err}`
-        );
+        Logger.error('Error on .../services/user-profile.services.ts -> updateProfileById()', `${err}`);
         throw new Error(`${err}`);
     }
 };

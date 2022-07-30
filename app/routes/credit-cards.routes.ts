@@ -4,7 +4,7 @@ import * as creditCardsController from '../controllers/credit-cards.controllers'
 import * as handlers from './handlers/credit-cards.handlers';
 import * as partnerHandlers from './handlers/partners.handlers';
 
-const router = Router({});
+const router = Router();
 router.all('*', handlers.commons);
 
 // Routes for Credit Cards C.R.U
@@ -23,10 +23,6 @@ router.post('/:id/partners', partnerHandlers.addNew, creditCardsController.addOr
 
 router.put('/:id/partners', partnerHandlers.editOne, creditCardsController.addOrEditCCPartner);
 
-router.delete(
-    '/:id/partners/:partnerId',
-    partnerHandlers.deleteOne,
-    creditCardsController.deletePartner
-);
+router.delete('/:id/partners/:partnerId', partnerHandlers.deleteOne, creditCardsController.deletePartner);
 
 export default router;

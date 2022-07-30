@@ -1,9 +1,6 @@
-import { EditableUserProfile } from "../interfaces/user-profile.interfaces";
+import { EditableUserProfile } from '../interfaces/user-profile.interfaces';
 
-export const filterPayloadField = (
-    payload: EditableUserProfile,
-    allowedProfile: EditableUserProfile
-): void => {
+export const filterPayloadField = (payload: EditableUserProfile, allowedProfile: EditableUserProfile): void => {
     if (payload.nextPaymentDate) {
         allowedProfile.nextPaymentDate = payload.nextPaymentDate;
     }

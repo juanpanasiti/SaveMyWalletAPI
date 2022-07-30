@@ -2,10 +2,8 @@ import dotenv from 'dotenv';
 
 import Server from './app/server';
 
-dotenv.config()
+dotenv.config();
 
 const server = new Server();
 
-
-
-server.listen()
+server.listen();

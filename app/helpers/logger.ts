@@ -1,4 +1,3 @@
-import { isDevEnv } from './env';
 import colors from 'colors';
 const logLevels = {
     success: 'SUCCESS',
