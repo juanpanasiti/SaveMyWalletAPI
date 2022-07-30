@@ -1,28 +1,28 @@
 import { Router } from 'express';
 
 import * as creditCardsController from '../controllers/credit-cards.controllers';
-import * as handlers from './handlers/credit-cards.handlers';
-import * as partnerHandlers from './handlers/partners.handlers';
+import * as ccValidators from './validators/credit-card.validators';
+import * as partnerValidators from './validators/partner.validators';
 
 const router = Router();
-router.all('*', handlers.commons);
+router.all('*', ccValidators.commons);
 
 // Routes for Credit Cards C.R.U
-router.post('/', handlers.create, creditCardsController.createCreditCard);
+router.post('/', ccValidators.create, creditCardsController.createCreditCard);
 
-router.get('/', handlers.getAll, creditCardsController.getAllPaginated);
+router.get('/', ccValidators.getAll, creditCardsController.getAllPaginated);
 
-router.get('/:id', handlers.getOne, creditCardsController.getOneCreditCardById);
+router.get('/:id', ccValidators.getOne, creditCardsController.getOneCreditCardById);
 
-router.put('/:id', handlers.editOne, creditCardsController.editOneCreditCardById);
+router.put('/:id', ccValidators.editOne, creditCardsController.editOneCreditCardById);
 
-router.delete('/:id', handlers.deleteOne, creditCardsController.deleteOneCreditCard);
+router.delete('/:id', ccValidators.deleteOne, creditCardsController.deleteOneCreditCard);
 
 // CRUD routes for Partners related to a Credit Card
-router.post('/:id/partners', partnerHandlers.addNew, creditCardsController.addOrEditCCPartner);
+router.post('/:id/partners', partnerValidators.addNew, creditCardsController.addOrEditCCPartner);
 
-router.put('/:id/partners', partnerHandlers.editOne, creditCardsController.addOrEditCCPartner);
+router.put('/:id/partners', partnerValidators.editOne, creditCardsController.addOrEditCCPartner);
 
-router.delete('/:id/partners/:partnerId', partnerHandlers.deleteOne, creditCardsController.deletePartner);
+router.delete('/:id/partners/:partnerId', partnerValidators.deleteOne, creditCardsController.deletePartner);
 
 export default router;

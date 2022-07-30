@@ -1,14 +1,14 @@
 import { Router } from 'express';
 
 import * as authControllers from '../controllers/auth.controllers';
-import * as handlers from './handlers/auth.handlers';
+import * as authValidators from './validators/auth.validators';
 
 const router = Router();
 
-router.post('/register', handlers.register, authControllers.register);
+router.post('/register', authValidators.register, authControllers.register);
 
-router.post('/login', handlers.login, authControllers.login);
+router.post('/login', authValidators.login, authControllers.login);
 
-router.get('/token', handlers.token, authControllers.renewJWT);
+router.get('/token', authValidators.token, authControllers.renewJWT);
 
 export default router;

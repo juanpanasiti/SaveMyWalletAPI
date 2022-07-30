@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import * as userControllers from '../controllers/user.controllers';
-import * as handlers from './handlers/users.handlers';
+import * as userValidators from './validators/user.validators';
 
 const router = Router();
-router.all('*', handlers.commons);
+router.all('*', userValidators.commons);
 
-router.get('/', handlers.getAll, userControllers.getAllPaginated);
+router.get('/', userValidators.getAll, userControllers.getAllPaginated);
 
-router.get('/:id', handlers.getOne, userControllers.getUserById);
+router.get('/:id', userValidators.getOne, userControllers.getUserById);
 
-router.put('/:id', handlers.update, userControllers.updateUserById);
+router.put('/:id', userValidators.update, userControllers.updateUserById);
 
-router.delete('/:id', handlers.deleteOne, userControllers.deleteUserById);
+router.delete('/:id', userValidators.deleteOne, userControllers.deleteUserById);
 
 export default router;
