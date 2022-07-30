@@ -63,12 +63,24 @@ router.put(
     [
         validateJWT,
         param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
+        creditCardExists,
         userMustBeOwnerCC,
         filterValidFields(['name', 'cycleAmountAlert', 'nextClosingDate', 'nextExpirationDate']),
         fieldValidate,
-        creditCardExists,
     ],
     creditCardsController.editOneCreditCardById
+);
+
+router.delete(
+    '/:id',
+    [
+        validateJWT,
+        param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
+        creditCardExists,
+        userMustBeOwnerCC,
+        fieldValidate,
+    ],
+    creditCardsController.deleteOneCreditCard
 );
 
 // CRUD routes for Partners related to a Credit Card
@@ -79,9 +91,9 @@ router.post(
         atLeastOneExists(['userUsername', 'userEmail']),
         filterValidFields(['userUsername', 'userEmail', 'canEdit']),
         body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        creditCardExists,
         userMustBeOwnerCC,
         fieldValidate,
-        creditCardExists,
     ],
     creditCardsController.addOrEditPartnerToCreditCard
 );
@@ -93,9 +105,9 @@ router.put(
         atLeastOneExists(['userUsername', 'userEmail']),
         filterValidFields(['userUsername', 'userEmail', 'canEdit']),
         body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        creditCardExists,
         userMustBeOwnerCC,
         fieldValidate,
-        creditCardExists,
     ],
     creditCardsController.addOrEditPartnerToCreditCard
 );
@@ -107,9 +119,9 @@ router.put(
         atLeastOneExists(['userUsername', 'userEmail']),
         filterValidFields(['userUsername', 'userEmail', 'canEdit']),
         body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        creditCardExists,
         userMustBeOwnerCC,
         fieldValidate,
-        creditCardExists,
     ],
     creditCardsController.addOrEditPartnerToCreditCard
 );
@@ -118,8 +130,8 @@ router.delete(
     '/:id/partners/:partnerId',
     [
         validateJWT,
-        userMustBeOwnerCC,
         creditCardExists,
+        userMustBeOwnerCC,
     ],
     creditCardsController.deletePartnerById
 );

@@ -12,6 +12,7 @@ import {
     PostCCRequest,
     PaginatedRequest,
     PostPartnerRequest,
+    DeleteCCRequest,
 } from '../types/request-response.types';
 import { UserFilterOptions } from '../types/user.types';
 import Partner from '../models/partner.model';
@@ -193,6 +194,44 @@ export const editOneCreditCardById = async (req: PutCCRequest, res: JsonResponse
         });
     }
 };
+
+
+export const deleteOneCreditCard = async (req: DeleteCCRequest, res: JsonResponse) => {
+    const { id } = req.params;
+    const uid = req.headers.authId;
+
+    const filterOptions: CCFilterOptions = {
+        filter: { _id: id, isDeleted: false },
+        projection: '_id name',
+    };
+    try {
+        const deletedCreditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+        Logger.warning(deletedCreditCard)
+
+        if (!deletedCreditCard) {
+            throw new Error('Some filter failed, this is not supposed to happen');
+        }
+        deletedCreditCard.isDeleted = true
+
+        await deletedCreditCard.save();
+
+        return res.status(200).json({
+            response_data: deletedCreditCard,
+            errors: [],
+        });
+    } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
+};
+
+
 
 // Credit Card controller to work with its related partners
 export const addOrEditPartnerToCreditCard = async (req: PostPartnerRequest, res: JsonResponse) => {

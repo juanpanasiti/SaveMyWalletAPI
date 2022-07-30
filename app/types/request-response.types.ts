@@ -16,6 +16,7 @@ export type PaginatedRequest = Request<{}, {}, {}, PaginationQuery>;
 export type PostCCRequest = Request<{}, {}, NewCreditCardBody>;
 export type GetOneCCRequest = Request<{ id: string }, {}, null, CCReqQuery>;
 export type PutCCRequest = Request<{ id: string }, {}, EditCreditCardBody>;
+export type DeleteCCRequest = Request<{ id: string }, {}, null>;
 
 // Partners Types
 export type PostPartnerRequest = Request<{ id: string }, {}, NewPartnerBody>;
