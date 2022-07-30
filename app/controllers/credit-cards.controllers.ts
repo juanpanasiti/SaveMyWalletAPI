@@ -15,6 +15,7 @@ import {
 } from '../types/request-response.types';
 import { UserFilterOptions } from '../types/user.types';
 import Partner from '../models/partner.model';
+import { DeletePartnerRequest } from '../types/request-response.types';
 
 export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
@@ -248,6 +249,35 @@ export const addOrEditPartnerToCreditCard = async (req: PostPartnerRequest, res:
             errors: [],
         });
     } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
+};
+
+export const deletePartnerById = async (req: DeletePartnerRequest, res: JsonResponse) => {
+    const { id, partnerId } = req.params;
+
+    const filterOptions: CCFilterOptions = {
+        filter: { _id: id, isDeleted: false },
+        projection: 'partners',
+    };
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+        const { modifiedCount } = await creditCard?.update({
+            $pull: { partners: { _id: partnerId } },
+        });
+        return res.status(200).json({
+            response_data: !!modifiedCount,
+            errors: [],
+        });
+    } catch (err) {
+        Logger.error(err);
         res.status(500).json({
             response_data: null,
             errors: [

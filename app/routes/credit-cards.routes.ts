@@ -85,6 +85,7 @@ router.post(
     ],
     creditCardsController.addOrEditPartnerToCreditCard
 );
+
 router.put(
     '/:id/partners',
     [
@@ -98,4 +99,29 @@ router.put(
     ],
     creditCardsController.addOrEditPartnerToCreditCard
 );
+
+router.put(
+    '/:id/partners',
+    [
+        validateJWT,
+        atLeastOneExists(['userUsername', 'userEmail']),
+        filterValidFields(['userUsername', 'userEmail', 'canEdit']),
+        body('canEdit', 'Indicates if partners can edit some CC data').isBoolean(),
+        userMustBeOwnerCC,
+        fieldValidate,
+        creditCardExists,
+    ],
+    creditCardsController.addOrEditPartnerToCreditCard
+);
+
+router.delete(
+    '/:id/partners/:partnerId',
+    [
+        validateJWT,
+        userMustBeOwnerCC,
+        creditCardExists,
+    ],
+    creditCardsController.deletePartnerById
+);
+
 export default router;

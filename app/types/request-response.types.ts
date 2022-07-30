@@ -19,3 +19,4 @@ export type PutCCRequest = Request<{ id: string }, {}, EditCreditCardBody>;
 
 // Partners Types
 export type PostPartnerRequest = Request<{ id: string }, {}, NewPartnerBody>;
+export type DeletePartnerRequest = Request<{ id: string; partnerId: string }, {}, NewPartnerBody>;
