@@ -38,7 +38,7 @@ export const createUser = async (fields: RegisterBody) => {
 
 export const getOneUserByFilter = async ({
     filter,
-    options = null,
+    options = {},
     projection = null,
 }: FilterOptions<UserModel>): Promise<UserModel | null> => {
     try {

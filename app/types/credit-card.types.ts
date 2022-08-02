@@ -1,4 +1,4 @@
-import { Document, Types } from 'mongoose';
+import { Document, FilterQuery, Types } from 'mongoose';
 import { CreditCardModel } from '../interfaces/credit-card.interfaces';
 import { FilterOptions } from '../interfaces/generic.interfaces';
 
@@ -9,6 +9,7 @@ export type CreditCardDB = Document<unknown, any, CreditCardModel> &
     };
 export type OneCreditCardDB = CreditCardDB | null;
 export type CCFilterOptions = FilterOptions<CreditCardModel>;
+export type CCQueryOptions = FilterQuery<CreditCardModel>;
 
 // Promises
 export type CCListPromise = Promise<CreditCardModel[]>;

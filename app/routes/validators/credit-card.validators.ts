@@ -33,7 +33,7 @@ export const getAll = [
 export const getOne = [
     param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
     fieldValidate,
-    creditCardExists,
+    creditCardExists(),
     query('partners', 'Indicates if partners must be in the response').toBoolean(),
     query('purchases', 'Indicates if purchases must be in the response').toBoolean(),
     query('cycles', 'Indicates if cycles must be in the response').toBoolean(),
@@ -41,7 +41,7 @@ export const getOne = [
 
 export const editOne = [
     param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
-    creditCardExists,
+    creditCardExists(),
     userMustBeOwnerCC,
     filterValidFields(['name', 'cycleAmountAlert', 'nextClosingDate', 'nextExpirationDate']),
     fieldValidate,
@@ -49,7 +49,7 @@ export const editOne = [
 
 export const deleteOne = [
     param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
-    creditCardExists,
+    creditCardExists(),
     userMustBeOwnerCC,
     fieldValidate,
 ];

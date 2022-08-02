@@ -9,9 +9,27 @@ import {
 } from '../types/credit-card.types';
 
 export const countCreditCardsByFilter = async (filterOptions: CCFilterOptions): Promise<number> => {
-    const { filter = {} } = filterOptions;
+    const { filter = {}, options = {} } = filterOptions;
     try {
-        return await CreditCard.countDocuments(filter);
+        // const test = await CreditCard.aggregate([
+        //     {
+        //         $project:{
+        //             items: {
+        //                 $filter: {
+        //                     input: '$partners',
+        //                     as: 'partner',
+        //                     cond: {
+        //                         '$and': [
+
+        //                         ]
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // ])
+        // Logger.warning(test)
+        return await CreditCard.countDocuments(filter, options);
     } catch (err) {
         Logger.error(
             'Error on .../services/credit-cards.services.ts -> countCreditCardsByFilter()',

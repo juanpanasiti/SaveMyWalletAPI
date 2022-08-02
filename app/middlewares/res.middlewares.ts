@@ -6,12 +6,16 @@ export const responseInterceptor = async (req: Request, res: Response, next: Nex
     res.json = function (response): any {
         const token = req.header('g-token');
         if (token) {
-            const { exp, uid } = verifyJWT(token);
-            if (mustRenewToken(exp)) {
-                generateJWT(uid)
-                    .then((newToken) => (response.token = newToken))
-                    .finally(() => jsonResponse.apply(res, [response]));
-            } else {
+            try {
+                const { exp, uid } = verifyJWT(token);
+                if (mustRenewToken(exp)) {
+                    generateJWT(uid)
+                        .then((newToken) => (response.token = newToken))
+                        .finally(() => jsonResponse.apply(res, [response]));
+                } else {
+                    jsonResponse.apply(res, [response]);
+                }
+            } catch (err) {
                 jsonResponse.apply(res, [response]);
             }
         } else {

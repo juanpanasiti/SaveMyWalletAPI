@@ -48,15 +48,6 @@ export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) 
             ],
         });
     }
-
-    res.status(501).json({
-        response_data: null,
-        errors: [
-            {
-                msg: 'Not implemented yet',
-            },
-        ],
-    });
 };
 
 export const createCreditCard = async (req: PostCCRequest, res: JsonResponse) => {
@@ -319,6 +310,93 @@ export const deletePartner = async (req: DeletePartnerRequest, res: JsonResponse
             ],
         });
     }
+};
+
+// Credit Card controller to work with its related partners
+export const getAllCCPurchasesPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
+    const { limit = 10, skip = 0 } = req.query;
+    const uid = req.headers.authId;
+    const {id} = req.params
+
+    const filterOptions: CCFilterOptions = {
+        filter: {
+            _id: id,
+        },
+        projection: 'purchases'
+    };
+    try {
+        const ccAsociated = await creditCardServices.getOneCreditCardsByFilter(filterOptions)
+        await ccAsociated?.populate({
+            path: 'purchases',
+        })
+
+        return res.status(200).json({
+            response_data: ccAsociated?.purchases,
+            errors: [],
+        });
+    } catch (err) {
+        Logger.error(err);
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `${err}`,
+                },
+            ],
+        });
+    }
+
+    res.status(501).json({
+        response_data: null,
+        errors: [
+            {
+                msg: 'Not implemented yet',
+            },
+        ],
+    });
+};
+export const newCCPurchase = async (req: PaginatedRequest, res: JsonResponse) => {
+    Logger.warning(req.params);
+    Logger.info(req.body);
+    Logger.warning(req.query);
+    res.status(501).json({
+        response_data: null,
+        errors: [
+            {
+                msg: 'Not implemented yet',
+            },
+        ],
+    });
+};
+export const getOneCCPurchase = async (req: PaginatedRequest, res: JsonResponse) => {
+    res.status(501).json({
+        response_data: null,
+        errors: [
+            {
+                msg: 'Not implemented yet',
+            },
+        ],
+    });
+};
+export const updateCCPurcase = async (req: PaginatedRequest, res: JsonResponse) => {
+    res.status(501).json({
+        response_data: null,
+        errors: [
+            {
+                msg: 'Not implemented yet',
+            },
+        ],
+    });
+};
+export const deleteCCPurcase = async (req: PaginatedRequest, res: JsonResponse) => {
+    res.status(501).json({
+        response_data: null,
+        errors: [
+            {
+                msg: 'Not implemented yet',
+            },
+        ],
+    });
 };
 
 // ! DELETE - Temporal response

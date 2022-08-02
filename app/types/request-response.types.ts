@@ -6,7 +6,7 @@ import { JsonResponse as IJsonResponse } from '../interfaces/response.interfaces
 
 // Base types
 export type JsonResponse = Response<IJsonResponse>;
-export type PaginatedRequest = Request<{}, {}, {}, PaginationQuery>;
+export type PaginatedRequest = Request<{id: string}, {}, {}, PaginationQuery>;
 
 // Credit Card Types
 export type PostCCRequest = Request<{}, {}, NewCreditCardBody>;
