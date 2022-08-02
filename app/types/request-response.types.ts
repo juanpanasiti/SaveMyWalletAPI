@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CCReqQuery, EditCreditCardBody, NewCreditCardBody } from '../interfaces/credit-card.interfaces';
 import { NewPartnerBody } from '../interfaces/partner.interfaces';
 import { PaginationQuery } from '../interfaces/path.interfaces';
+import { NewPurchaseBody } from '../interfaces/purchase.interfaces';
 import { JsonResponse as IJsonResponse } from '../interfaces/response.interfaces';
 
 // Base types
@@ -17,3 +18,6 @@ export type DeleteCCRequest = Request<{ id: string }, {}, null>;
 // Partners Types
 export type PostPartnerRequest = Request<{ id: string }, {}, NewPartnerBody>;
 export type DeletePartnerRequest = Request<{ id: string; partnerId: string }, {}, NewPartnerBody>;
+
+// PurchaseTypes
+export type PostPurchaseRequest = Request<{ id: string }, {}, NewPurchaseBody>;
