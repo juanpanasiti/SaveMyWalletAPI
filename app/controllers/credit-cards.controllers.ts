@@ -402,9 +402,7 @@ export const getOneCCPurchase = async (req: GetOnePurchaseRequest, res: JsonResp
         if (!creditCard) {
             throw new Error('CreditCard not found, this is not supposed to happen!');
         }
-        Logger.info(creditCard);
         const purchase = creditCard.purchases.find((p) => p._id?.toString() === purchaseId);
-        Logger.warning(purchase);
         res.status(200).json({
             response_data: purchase,
             errors: [],
