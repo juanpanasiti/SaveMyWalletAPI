@@ -21,3 +21,4 @@ export type DeletePartnerRequest = Request<{ id: string; partnerId: string }, {}
 
 // PurchaseTypes
 export type PostPurchaseRequest = Request<{ id: string }, {}, NewPurchaseBody>;
+export type GetOnePurchaseRequest = Request<{ id: string, purchaseId: string }, {}, NewPurchaseBody>;

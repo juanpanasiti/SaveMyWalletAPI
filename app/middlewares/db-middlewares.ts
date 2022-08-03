@@ -10,20 +10,20 @@ type CCExistsOptions = {
 };
 const defaultOptions: CCExistsOptions = {
     needEditAccess: false,
-    userMustBeOwner: false
-}
+    userMustBeOwner: false,
+};
 
-export const creditCardExists = ( options: CCExistsOptions = defaultOptions) => {
+export const creditCardExists = (options: CCExistsOptions = defaultOptions) => {
     /**
      * This function checks that the credit card exists and the user logged is the owner or a partner.
      * ! Refactor when be possible
      */
-    const {needEditAccess, userMustBeOwner} = options
+    const { needEditAccess, userMustBeOwner } = options;
     return async (req: Request, res: Response<JsonResponse>, next: NextFunction) => {
         const uid = req.headers.authId;
         const ccId = req.params.id;
         // const queryPartner: CCQueryOptions = { 'partner.user': uid , 'partner.canEdit': true };
-        const queryPartner: CCQueryOptions = userMustBeOwner ? {} : { 'partner.user': uid };
+        const queryPartner: CCQueryOptions = userMustBeOwner ? {} : { 'partners.user': uid };
         const filterOptions: CCFilterOptions = {
             filter: {
                 $and: [{ _id: ccId, isDeleted: false }, { $or: [{ owner: uid }, queryPartner] }],
@@ -40,7 +40,7 @@ export const creditCardExists = ( options: CCExistsOptions = defaultOptions) => 
             } else {
                 const docs = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
                 if (docs?.owner.toString() === uid) {
-                    count = 1
+                    count = 1;
                 } else {
                     const canEdit = docs?.partners.filter((partner) => {
                         return partner.user.toString() === uid && partner.canEdit === true;
@@ -92,6 +92,47 @@ export const userMustBeOwnerCC = async (req: Request, res: Response<JsonResponse
                 errors: [
                     {
                         msg: 'Just the owner can use do this action',
+                    },
+                ],
+            });
+        }
+    } catch (err) {
+        Logger.error(err);
+        return res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `${err}`,
+                },
+            ],
+        });
+    }
+    next();
+};
+
+export const purchaseExists = async (req: Request, res: Response<JsonResponse>, next: NextFunction) => {
+    const ccId = req.params.id;
+    const purchaseId = req.params.purchaseId;
+
+    const filterOptions: CCFilterOptions = {
+        filter: {
+            $and: [{ _id: ccId, isDeleted: false }, { 'purchases._id': purchaseId }],
+        },
+        options: {
+            limit: 1,
+        },
+    };
+    try {
+        const count = await creditCardServices.countCreditCardsByFilter(filterOptions);
+        if (count === 0) {
+            return res.status(404).json({
+                response_data: null,
+                errors: [
+                    {
+                        msg: 'Purchase not found!',
+                        location: 'params',
+                        param: 'id',
+                        value: purchaseId,
                     },
                 ],
             });

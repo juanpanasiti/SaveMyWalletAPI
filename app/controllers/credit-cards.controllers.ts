@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { PopulateOptions } from 'mongoose';
+import { PopulateOptions, ProjectionElementType, ProjectionType } from 'mongoose';
 
 import Logger from '../helpers/logger';
 import * as creditCardServices from '../services/credit-card.services';
@@ -15,10 +15,12 @@ import {
     PostPartnerRequest,
     DeleteCCRequest,
     PostPurchaseRequest,
+    GetOnePurchaseRequest,
 } from '../types/request-response.types';
 import { UserFilterOptions } from '../types/user.types';
 import Partner from '../models/partner.model';
 import { DeletePartnerRequest } from '../types/request-response.types';
+import { CreditCardModel } from '../interfaces/credit-card.interfaces';
 
 export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
@@ -317,19 +319,19 @@ export const deletePartner = async (req: DeletePartnerRequest, res: JsonResponse
 export const getAllCCPurchasesPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { limit = 10, skip = 0 } = req.query;
     // const uid = req.headers.authId;
-    const {id} = req.params
+    const { id } = req.params;
 
     const filterOptions: CCFilterOptions = {
         filter: {
             _id: id,
         },
-        projection: 'purchases'
+        projection: 'purchases',
     };
     try {
-        const ccAsociated = await creditCardServices.getOneCreditCardsByFilter(filterOptions)
+        const ccAsociated = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
         await ccAsociated?.populate({
             path: 'purchases',
-        })
+        });
 
         return res.status(200).json({
             response_data: ccAsociated?.purchases,
@@ -352,24 +354,24 @@ export const newCCPurchase = async (req: PostPurchaseRequest, res: JsonResponse)
     // Logger.info(req.body);
     // Logger.warning(req.query);
 
-    const {id} = req.params // credit-card ID
+    const { id } = req.params; // credit-card ID
     const filterOptions: CCFilterOptions = {
         filter: {
             _id: id,
         },
-        projection: 'purchases'
+        projection: 'purchases',
     };
     try {
         // Create new Purchase
-        const purchase = purchaseServices.newPurchase(req.body)
+        const purchase = purchaseServices.newPurchase(req.body);
 
         // Add to CC
-        const ccAsociated = await creditCardServices.getOneCreditCardsByFilter(filterOptions)
+        const ccAsociated = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
         if (!ccAsociated) {
-            throw new Error("CreditCard not found, this is not supposed to happen!");
+            throw new Error('CreditCard not found, this is not supposed to happen!');
         }
-        ccAsociated.purchases.push(purchase)
-        await ccAsociated.save()
+        ccAsociated.purchases.push(purchase);
+        await ccAsociated.save();
 
         return res.status(201).json({
             response_data: purchase,
@@ -388,16 +390,38 @@ export const newCCPurchase = async (req: PostPurchaseRequest, res: JsonResponse)
     }
 };
 
-export const getOneCCPurchase = async (req: PaginatedRequest, res: JsonResponse) => {
-    res.status(501).json({
-        response_data: null,
-        errors: [
-            {
-                msg: 'Not implemented yet',
-            },
-        ],
-    });
+export const getOneCCPurchase = async (req: GetOnePurchaseRequest, res: JsonResponse) => {
+    const { id, purchaseId } = req.params;
+    const filterOptions: CCFilterOptions = {
+        filter: {
+            _id: id,
+        },
+    };
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+        if (!creditCard) {
+            throw new Error('CreditCard not found, this is not supposed to happen!');
+        }
+        Logger.info(creditCard);
+        const purchase = creditCard.purchases.find((p) => p._id?.toString() === purchaseId);
+        Logger.warning(purchase);
+        res.status(200).json({
+            response_data: purchase,
+            errors: [],
+        });
+    } catch (err) {
+        Logger.error(err);
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `${err}`,
+                },
+            ],
+        });
+    }
 };
+
 export const updateCCPurcase = async (req: PaginatedRequest, res: JsonResponse) => {
     res.status(501).json({
         response_data: null,
