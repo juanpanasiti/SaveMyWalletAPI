@@ -11,24 +11,6 @@ import {
 export const countCreditCardsByFilter = async (filterOptions: CCFilterOptions): Promise<number> => {
     const { filter = {}, options = {} } = filterOptions;
     try {
-        // const test = await CreditCard.aggregate([
-        //     {
-        //         $project:{
-        //             items: {
-        //                 $filter: {
-        //                     input: '$partners',
-        //                     as: 'partner',
-        //                     cond: {
-        //                         '$and': [
-
-        //                         ]
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // ])
-        // Logger.warning(test)
         return await CreditCard.countDocuments(filter, options);
     } catch (err) {
         Logger.error(

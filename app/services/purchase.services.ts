@@ -1,4 +1,4 @@
-import { NewPurchaseBody, PurchaseModel } from '../interfaces/purchase.interfaces';
+import { NewPurchaseBody } from '../interfaces/purchase.interfaces';
 import Purchase from '../models/purchase.model';
 import { PurchaseDocument } from '../types/purchase.tytpes';
 

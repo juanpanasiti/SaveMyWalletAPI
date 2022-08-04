@@ -16,11 +16,13 @@ import {
     DeleteCCRequest,
     PostPurchaseRequest,
     GetOnePurchaseRequest,
+    PutPurchaseRequest,
+    DeletePurchaseRequest,
 } from '../types/request-response.types';
 import { UserFilterOptions } from '../types/user.types';
 import Partner from '../models/partner.model';
 import { DeletePartnerRequest } from '../types/request-response.types';
-import { CreditCardModel } from '../interfaces/credit-card.interfaces';
+import { ICreditCardModel } from '../interfaces/credit-card.interfaces';
 
 export const getAllPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { skip = 0, limit = 2 } = req.query;
@@ -315,7 +317,7 @@ export const deletePartner = async (req: DeletePartnerRequest, res: JsonResponse
     }
 };
 
-// Credit Card controller to work with its related partners
+// Credit Card controller to work with its related purchases
 export const getAllCCPurchasesPaginated = async (req: PaginatedRequest, res: JsonResponse) => {
     const { limit = 10, skip = 0 } = req.query;
     // const uid = req.headers.authId;
@@ -349,6 +351,7 @@ export const getAllCCPurchasesPaginated = async (req: PaginatedRequest, res: Jso
         });
     }
 };
+
 export const newCCPurchase = async (req: PostPurchaseRequest, res: JsonResponse) => {
     // Logger.warning(req.params);
     // Logger.info(req.body);
@@ -420,35 +423,70 @@ export const getOneCCPurchase = async (req: GetOnePurchaseRequest, res: JsonResp
     }
 };
 
-export const updateCCPurcase = async (req: PaginatedRequest, res: JsonResponse) => {
-    res.status(501).json({
-        response_data: null,
-        errors: [
-            {
-                msg: 'Not implemented yet',
-            },
-        ],
-    });
-};
-export const deleteCCPurcase = async (req: PaginatedRequest, res: JsonResponse) => {
-    res.status(501).json({
-        response_data: null,
-        errors: [
-            {
-                msg: 'Not implemented yet',
-            },
-        ],
-    });
+export const updateCCPurcase = async (req: PutPurchaseRequest, res: JsonResponse) => {
+    const { id, purchaseId } = req.params;
+    const { itemNameCC, descriptiveName, detail } = req.body;
+    const ccFilterOptions: CCFilterOptions = {
+        filter: { _id: id, isDeleted: false },
+        projection: 'purchases',
+    };
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(ccFilterOptions);
+        if (!creditCard) {
+            return;
+        }
+        let purchaseUpdated;
+        creditCard.purchases.map((purchase) => {
+            if (!(purchase._id?.toString() === purchaseId)) {
+                return;
+            }
+            purchase.itemNameCC = itemNameCC || purchase.itemNameCC;
+            purchase.descriptiveName = descriptiveName || purchase.descriptiveName;
+            purchase.detail = detail || purchase.detail;
+            purchaseUpdated = purchase;
+        });
+        await creditCard.save();
+        return res.status(200).json({
+            response_data: purchaseUpdated,
+            errors: [],
+        });
+    } catch (err) {
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `${err}`,
+                },
+            ],
+        });
+    }
 };
 
-// ! DELETE - Temporal response
-export const notImplemented = async (req: Request, res: JsonResponse) => {
-    res.status(501).json({
-        response_data: null,
-        errors: [
-            {
-                msg: 'Not implemented yet',
-            },
-        ],
-    });
+export const deleteCCPurcase = async (req: DeletePurchaseRequest, res: JsonResponse) => {
+    const { id, purchaseId } = req.params;
+
+    const filterOptions: CCFilterOptions = {
+        filter: { _id: id, isDeleted: false },
+        projection: 'purchases',
+    };
+    try {
+        const creditCard = await creditCardServices.getOneCreditCardsByFilter(filterOptions);
+        const { modifiedCount } = await creditCard?.update({
+            $pull: { purchases: { _id: purchaseId } },
+        });
+        return res.status(200).json({
+            response_data: !!modifiedCount,
+            errors: [],
+        });
+    } catch (err) {
+        Logger.error(err);
+        res.status(500).json({
+            response_data: null,
+            errors: [
+                {
+                    msg: `Error -> ${err}`,
+                },
+            ],
+        });
+    }
 };

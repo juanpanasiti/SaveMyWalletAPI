@@ -22,3 +22,9 @@ export interface NewPurchaseBody {
     installmentCount?: number;
     amount?: number;
 }
+
+export interface UpdatePurchaseBody {
+    itemNameCC?: string;
+    descriptiveName?: string;
+    detail?: string;
+}

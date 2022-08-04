@@ -41,7 +41,7 @@ export const update = [
     param('id', 'Must be a valid ObjectID of Mongo').isMongoId(),
     param('purchaseId', 'Must be a valid ObjectID of Mongo').isMongoId(),
     creditCardExists({ needEditAccess: true }),
-    filterValidFields(['itemNameCC', 'descriptiveName', 'detail', 'date', 'installmentCount', 'amount']),
+    filterValidFields(['itemNameCC', 'descriptiveName', 'detail']),
     purchaseExists,
     fieldValidate,
 ];

@@ -1,10 +1,11 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { CreditCardModel } from '../interfaces/credit-card.interfaces';
+import { ICreditCardModel } from '../interfaces/credit-card.interfaces';
+import { PurchaseModel, UpdatePurchaseBody } from '../interfaces/purchase.interfaces';
 import { PartnerSchema } from './partner.model';
 import { PaymentCycleSchema } from './payment-cycle.model';
 import { PurchaseSchema } from './purchase.model';
 
-const CreditCardSchema = new Schema<CreditCardModel>({
+const CreditCardSchema = new Schema<ICreditCardModel>({
     name: {},
     paymentCycles: {
         type: [PaymentCycleSchema],

@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 import { PartnerModel } from './partner.interfaces';
 import { PaymentCycleModel } from './payment-cycle.interfaces';
-import { PurchaseModel } from './purchase.interfaces';
+import { PurchaseModel, UpdatePurchaseBody } from './purchase.interfaces';
 import { UserModel } from './user.interface';
 
-export interface CreditCardModel {
+export interface ICreditCardModel extends Document {
     _id?: ObjectId;
     name: string;
     paymentCycles: PaymentCycleModel[];
